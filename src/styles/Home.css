@@ -1,0 +1,47 @@
+/* Home.css */
+
+.home-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    color: #000000; /* White text color */
+  }
+  
+  .hero-section {
+    background-color: #cac5c5; /* Dark gray background color */
+    padding: 50px;
+    text-align: center;
+  }
+  
+  .features-section {
+    margin-top: 50px;
+  }
+  
+  .feature {
+    margin-bottom: 20px;
+  }
+  
+  .feature h3 {
+    color: #ff69b4; /* Pink feature title color */
+  }
+  
+  .feature p {
+    color: #000000; /* Light gray feature text color */
+  }
+  
+  .testimonial-section {
+    margin-top: 50px;
+  }
+  
+  .testimonial {
+    border: 1px solid #ff69b4; /* Pink border */
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .author {
+    font-style: italic;
+    text-align: right;
+    color: #ff69b4; /* Pink author text color */
+  }
+  

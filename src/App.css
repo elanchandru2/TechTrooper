@@ -1,0 +1,14 @@
+
+
+/* scrollbar track */
+::-webkit-scrollbar {
+    background-color: black; /* Change the background color to black */
+    width: 10px;
+}
+
+/* scrollbar thumb */
+::-webkit-scrollbar-thumb {
+    background-color: #9C27B0; /* Change the color of the thumb to pink */
+    border-radius: 100px;
+    width: 10px;
+}

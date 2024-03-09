@@ -1,0 +1,13 @@
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .order-confirmation, .order-confirmation * {
+    visibility: visible;
+  }
+  .order-confirmation {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+}
