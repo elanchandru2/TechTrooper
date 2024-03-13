@@ -24,7 +24,7 @@ function ContainerInsideExample() {
     <>
       <Navbar expand="lg" className="bg-transparent Navbar" variant="dark">
         <Container>
-          <Navbar.Brand href="#"><h4 style={{fontFamily:"monospace", color:"black"}} className='text-black'>Tech trooper</h4></Navbar.Brand>
+          <Navbar.Brand href="#"><h4 style={{fontFamily:"monospace", color:"black"}} className='text-black'>Tec trooper</h4></Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" style={{borderColor: "black"}}>
             <GearFill color="black" size={24} />
           </Navbar.Toggle>
