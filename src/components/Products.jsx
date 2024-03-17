@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Grid, Card, CardContent, CardMedia, Typography, Button, Container, Skeleton } from "@mui/material";
-import Rating from '@mui/material/Rating'; // Import Rating component
+import { Grid, Card, CardContent, CardMedia, Typography, Button, Container, Skeleton, TextField, Select, MenuItem, InputAdornment, IconButton } from "@mui/material";
+import { Search as SearchIcon } from "@mui/icons-material";
+import Rating from '@mui/material/Rating';
 import "../styles/Product.css";
 import Productcarsoul from "./Productcarsoul";
 
@@ -32,33 +33,48 @@ const ProductSkeleton = () => (
 export default function Product() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState("priceLowToHigh");
 
   useEffect(() => {
-    // Simulate loading delay
     const delay = setTimeout(() => {
-      fetch("https://dummyjson.com/products")
+      fetch(`https://dummyjson.com/products/search?q=${searchTerm}&sortBy=${sortBy}`)
         .then((res) => res.json())
         .then((json) => {
-          setData(json.products);
-          setLoading(false); // Set loading to false when data is fetched
+          // Sort the data based on the selected sorting option
+          const sortedData = json.products.slice().sort((a, b) => {
+            if (sortBy === 'priceLowToHigh') {
+              return a.price - b.price;
+            } else if (sortBy === 'priceHighToLow') {
+              return b.price - a.price;
+            } else {
+              return b.rating - a.rating;
+            }
+          });
+          setData(sortedData);
+          setLoading(false);
         })
         .catch((error) => {
           console.error("Error fetching data:", error);
-          setLoading(false); // Set loading to false in case of error
+          setLoading(false);
         });
-    }, 3000); // 3000 milliseconds delay
-  
-    // Cleanup function to clear timeout in case component unmounts before delay completes
-    return () => clearTimeout(delay);
-  }, []);
-  
+    }, 3000);
 
-  // Function to truncate the title and description
+    return () => clearTimeout(delay);
+  }, [searchTerm, sortBy]);
+
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const handleSortChange = (event) => {
+    setSortBy(event.target.value);
+  };
+
   const truncateString = (str, maxLength) => {
     return str.length > maxLength ? str.substring(0, maxLength) + "..." : str;
   };
 
-  // Function to capitalize the first letter of each sentence in the description
   const standardizeDescription = (description) => {
     return description.substring(0, 40).charAt(0).toUpperCase() + description.substring(0, 40).slice(1).toLowerCase();
   };
@@ -67,38 +83,74 @@ export default function Product() {
     <>
       <Productcarsoul />
       <Container maxWidth="lg">
+        <Grid container spacing={3} justifyContent="flex-end">
+          <Grid item xs={12} sm={6} md={4}>
+            <TextField
+              label="Search"
+              variant="outlined"
+              value={searchTerm}
+              onChange={handleSearch}
+              fullWidth
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton>
+                      <SearchIcon />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+              style={{ marginBottom: 20 }}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} md={4}>
+            <Select
+              value={sortBy}
+              onChange={handleSortChange}
+              variant="outlined"
+              fullWidth
+              style={{ marginBottom: 20 }}
+            >
+              <MenuItem value="priceLowToHigh">Price: Low to High</MenuItem>
+              <MenuItem value="priceHighToLow">Price: High to Low</MenuItem>
+              <MenuItem value="rating">By Review Rating</MenuItem>
+            </Select>
+          </Grid>
+        </Grid>
         <Grid container spacing={3}>
           {loading ? (
-            // Render skeleton items if data is still loading
             Array.from(new Array(6)).map((_, index) => (
               <ProductSkeleton key={index} />
             ))
           ) : (
-            // Render product cards when data is loaded
-            data.map((product, index) => (
-              <Grid item xs={12} sm={6} md={4} key={index}>
-                <Card>
-                  <CardMedia
-                    component="img"
-                    image={product.thumbnail}
-                    alt={product.title}
-                    style={{ height: 200, objectFit: "contain" }}
-                  />
-                  <CardContent>
-                    <Typography variant="h6">{truncateString(product.title, 20)}</Typography>
-                    <Typography variant="body2">{standardizeDescription(product.description)}...</Typography>
-                    <Typography variant="body1">Price: ${product.price}</Typography>
-                    <Rating name="rating" value={product.rating} precision={0.5} readOnly style={{ color: '#9C27B0' }} />
-                  </CardContent>
-                  <CardContent style={{ flexGrow: 1 }} />
-                  <CardContent>
-                    <Button component={Link} to={`/products/${product.id}`} variant="outlined" style={{ borderColor: "#9C27B0", color: "#9C27B0" }} >
-                      Click to View
-                    </Button>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))
+            data.length === 0 ? (
+              <Typography variant="body1" align="center" className="no-results-message">No results found</Typography>
+            ) : (
+              data.map((product, index) => (
+                <Grid item xs={12} sm={6} md={4} key={index}>
+                  <Card>
+                    <CardMedia
+                      component="img"
+                      image={product.thumbnail}
+                      alt={product.title}
+                      style={{ height: 200, objectFit: "contain" }}
+                    />
+                    <CardContent>
+                      <Typography variant="h6">{truncateString(product.title, 20)}</Typography>
+                      <Typography variant="body2">{standardizeDescription(product.description)}...</Typography>
+                      <Typography variant="body1">Price: ${product.price}</Typography>
+                      <Rating name="rating" value={product.rating} precision={0.5} readOnly style={{ color: '#9C27B0' }} />
+                    </CardContent>
+                    <CardContent style={{ flexGrow: 1 }} />
+                    <CardContent>
+                      <Button component={Link} to={`/products/${product.id}`} variant="outlined" style={{ borderColor: "#9C27B0", color: "#9C27B0" }} >
+                        Click to View
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              ))
+            )
           )}
         </Grid>
       </Container>
