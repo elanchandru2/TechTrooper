@@ -124,7 +124,7 @@ export default function Product() {
             ))
           ) : (
             data.length === 0 ? (
-              <Typography variant="body1" align="center" className="no-results-message">No results found</Typography>
+              <Typography variant="body1" align="center" className="no-results-message" width={"100%"} style={{margin:"450px",fontSize:"75px"}}>No results found</Typography>
             ) : (
               data.map((product, index) => (
                 <Grid item xs={12} sm={6} md={4} key={index}>
